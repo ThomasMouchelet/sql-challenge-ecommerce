@@ -22,6 +22,72 @@ Avant de commencer, assurez-vous d’avoir :
 
 ---
 
+## 🧹 Reset de l'environnement Docker (projet)
+
+### Arrêter et supprimer les conteneurs
+
+```bash
+docker compose down
+```
+
+### Supprimer les volumes
+
+```bash
+docker compose down -v
+```
+
+> ⚠️ Cela supprimera toutes les données de la base de données.
+
+### Supprimer les images
+
+```bash
+docker compose down --rmi all
+```
+
+### Reset complet (conteneurs + volumes + images)
+
+```bash
+docker compose down -v --rmi all
+```
+
+## 🧹 Reset de l'environnement Docker (machine)
+
+# 1. Arrêter TOUS les conteneurs Docker sur votre machine
+
+```bash
+docker stop $(docker ps -aq)
+```
+
+# 2. Supprimer TOUS les conteneurs
+
+```bash
+docker rm $(docker ps -aq)
+```
+
+# 3. Supprimer TOUS les volumes
+
+```bash
+docker volume rm $(docker volume ls -q)
+```
+
+# 4. Supprimer TOUTES les images
+
+```bash
+docker rmi $(docker images -q) --force
+```
+
+# OU utilisez la commande ultime qui fait tout en une fois :
+
+```bash
+docker system prune -a --volumes --force
+```
+
+La dernière commande docker system prune -a --volumes --force est
+l'équivalent d'un reset total de Docker sans demander de confirmation.
+
+⚠️ ATTENTION : Cela va supprimer TOUS vos conteneurs, volumes, images et
+réseaux Docker, pas seulement ceux de ce projet !
+
 ## 🚀 Étapes pour lancer la base et injecter les données
 
 1. Placez le fichier `seed.sql` à la racine du projet (même dossier que `docker-compose.yml`).
