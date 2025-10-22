@@ -102,10 +102,8 @@ réseaux Docker, pas seulement ceux de ce projet !
 
    ```bash
    # remplacez le nom du conteneur "mysql" s’il diffère dans votre docker-compose
-   docker exec -i mysql mysql -uroot -p"$MYSQL_ROOT_PASSWORD" < seed.sql
+   docker exec -i mysql mysql -uroot -psupersecret < seed.sql
    ```
-
-   > Si votre fichier `.env` ne définit pas `MYSQL_ROOT_PASSWORD`, remplacez `"$MYSQL_ROOT_PASSWORD"` par le mot de passe root réel.
 
 4. Alternative — depuis le shell MySQL dans le conteneur :
 
@@ -120,6 +118,42 @@ réseaux Docker, pas seulement ceux de ce projet !
    ```bash
    docker exec -it mysql mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "SHOW DATABASES; USE app_db; SHOW TABLES;"
    ```
+
+---
+
+## 📊 Visualiser le schéma sur dbdiagram.io
+
+Pour mieux comprendre la structure de la base de données, vous pouvez visualiser le schéma de manière interactive sur [dbdiagram.io](https://dbdiagram.io).
+
+### Méthode 1 : Copier-coller le code DBML
+
+1. Rendez-vous sur [https://dbdiagram.io/d](https://dbdiagram.io/d)
+2. Cliquez sur "New Diagram" ou "Import"
+3. Sélectionnez "From DBML"
+4. Copiez le contenu du fichier `schema.dbml` (disponible dans ce projet)
+5. Collez-le dans l'éditeur de dbdiagram.io
+6. Le schéma s'affichera automatiquement avec toutes les tables et relations
+
+### Méthode 2 : Générer le DBML depuis MySQL
+
+Si vous souhaitez générer le DBML directement depuis votre base de données :
+
+```bash
+# Installer sql2dbml (nécessite Node.js)
+npm install -g sql2dbml
+
+# Générer le DBML depuis MySQL
+docker exec mysql mysqldump -uroot -p"$MYSQL_ROOT_PASSWORD" --no-data app_db > schema.sql
+sql2dbml schema.sql --mysql > schema.dbml
+```
+
+### Ce que vous verrez
+
+Le diagramme affichera :
+- Les **7 tables** : `categories`, `products`, `customers`, `orders`, `order_items`, `payments`, `reviews`
+- Les **relations** entre tables (clés étrangères)
+- Les **types de données** et contraintes
+- Une vue d'ensemble claire de l'architecture de la base de données
 
 ---
 
